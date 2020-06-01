@@ -1,18 +1,17 @@
 CC=gcc
 CFLAG= -g -Wall
 
-server:= ./server
-client:=./client
+SUBDIRS:= server client
 
-.PHONY: all $(server) $(client)
-all: $(server) $(client)
+.PHONY: subdirs $(SUBDIRS)
+subdirs: $(SUBDIRS)
 
-$(server): 
-	$(MAKE) --directory=$@
-
-$(client): 
-	$(MAKE) --directory=$@
+$(SUBDIRS):
+	$(MAKE) -C $@
 
 .PHONY: clean
-clean: $(server) $(client)
-	rm $(server)/*.o $(client)/*.o
+clean:
+	for dir in $(SUBDIRS); do 		\
+		$(MAKE) -C $$dir -f Makefile $@; \
+	done
+
