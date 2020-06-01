@@ -5,8 +5,11 @@ CFLAG= -g -Wall
 
 # <tagert> <target dep>
 # dep: recipe
-server: client.o 
+client: client.o 
 	$(CC) -o client client.c
 
+.PHONY: run
+run: client
+	./client
 clean: 
 	rm -rf *.o client

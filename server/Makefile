@@ -8,5 +8,8 @@ CFLAG= -g -Wall
 server: server.o 
 	$(CC) -o server server.c
 
+.PHONY: run
+run: server
+	./server
 clean: 
 	rm -rf *.o server
