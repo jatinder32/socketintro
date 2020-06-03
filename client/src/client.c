@@ -3,10 +3,50 @@
  */
 
 #include <stdio.h>
-#include "client.h"
+#include "common.h"
+
+#include <netdb.h> 
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <unistd.h> 
+#include <string.h> 
+#include <arpa/inet.h>
+#include <sys/socket.h> 
 
 int main()
 {
-	printf("Clinet\n");
+	int sockfd; 
+	struct sockaddr_in servaddr; 
+
+	sockfd = socket(AF_INET, SOCK_STREAM, 0); 
+	if (sockfd == -1) { 
+		printf("socket creation failed...\n"); 
+		exit(0); 
+	} 
+	else
+		printf("Socket successfully created..\n"); 
+	memset(&servaddr, '\0', sizeof(servaddr)); 
+
+	servaddr.sin_family = AF_INET; 
+	servaddr.sin_addr.s_addr = inet_addr("127.0.0.1"); 
+	servaddr.sin_port = htons(5432);
+
+	if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) != 0) { 
+		printf("connection with the server failed...\n"); 
+		exit(0); 
+	} 
+	else
+		printf("connected to the server..\n"); 
+
+	char buff[1024] = "hello";
+
+	while (1) {
+		(void)send(sockfd, "hello", strlen(buff), 0);
+
+		memset(buff, '\0', 1024);
+		(void)recv(sockfd, buff, 1024, 0);
+		printf("buff = %s\n", buff);
+	}
+	close(sockfd); 
 	return 0;
 }
