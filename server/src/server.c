@@ -26,7 +26,7 @@ int main()
 	server_sock = create_socket(port);
 
 	for(;;) { 	/* Run forever */
-		client_sock =  accept_connection(server_sock); 
+		client_sock = accept_connection(server_sock); 
 		assert(client_sock > 0);
 
 		/* Create separate memory for client argument */
