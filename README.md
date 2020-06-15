@@ -1,6 +1,6 @@
-#Build steps:  
+# Build steps:  
 
-##Two option for build   
+## Two option for build   
 
 ### Form topdir:  
 $ cd socketintro;  
@@ -8,46 +8,46 @@ $make
 
 Above step will compile server and cleint.  
 
-##From each modules(server and cleint).  
+## From each modules(server and cleint).  
 
-###How to build server  
+### How to build server  
 $ cd socketintro/server  
 $ make  
-
+```
 makefile output for reference:  
 	mkdir -p bin/  
 	mkdir -p obj/  
 	gcc -Wall  -Wno-unused-variable  -DLOG_USE_COLOR -g -I./include/ -c src/log.c src/server.c src/server_impl.c  
 	mv *.o obj/  
 	gcc  obj/log.o obj/server.o obj/server_impl.o -o bin/server -lpthread  
-    	
+```    	
 
 How to build cleint.   
 $ cd socketintro/client   
 $ make  
 
+```
 makefile outout:   
    mkdir -p bin/  
    mkdir -p obj/  
    gcc -Wall -std=c99 -g -I../include/ -c src/client.c -o obj/client.o  
+```
 
-
-##How to run:   
-### server:  
-$ cd socketintro/server (run as root, because log file will be
-    genrated as /var/log/server.log)  
+## How to run:   
+### server:  (run as root, because log file will be genrated as /var/log/server.log)  
+$ cd socketintro/server  
 $ ./bin/server  
 
-###for client:  
+### for client:  
 cd socketintro/client.  
 $ ./bin/client  
 
-##DONE:  
+## DONE:  
 1) ls command support.  
 2) bye command support.  
 3) server will give proper message to client for unsupported cmds.  
 
-##TODO:  
+## TODO:  
 1) use proper locking for logging as logging is happening in multi
    threaded environment.  
 2) want to use prtobuf library, as this will eliminate the machine
