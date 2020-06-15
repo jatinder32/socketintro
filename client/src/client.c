@@ -13,6 +13,7 @@
 #include <arpa/inet.h>
 #include <sys/socket.h> 
 
+#define	MAX_LIMIT	1024
 int main()
 {
 	int sockfd; 
@@ -23,8 +24,9 @@ int main()
 		printf("socket creation failed...\n"); 
 		exit(0); 
 	} 
-	else
+	else {
 		printf("Socket successfully created..\n"); 
+	}
 	memset(&servaddr, '\0', sizeof(servaddr)); 
 
 	servaddr.sin_family = AF_INET; 
@@ -38,15 +40,19 @@ int main()
 	else
 		printf("connected to the server..\n"); 
 
-	char buff[1024] = "hello";
-
+	char buff[MAX_LIMIT];
+	
 	while (1) {
-		(void)send(sockfd, "hello", strlen(buff), 0);
+		fprintf(stdout, "Please enter a command{ls | cd <path> | pwd| bye} \n");
+		scanf("%[^\n]%*c", buff); 
+   		printf("%s", buff); 
+		(void)send(sockfd, buff, strlen(buff), 0);
 
 		memset(buff, '\0', 1024);
 		(void)recv(sockfd, buff, 1024, 0);
 		printf("buff = %s\n", buff);
 	}
+
 	close(sockfd); 
 	return 0;
 }
