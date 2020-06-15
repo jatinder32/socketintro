@@ -1,16 +1,18 @@
-Build steps: Two option for build.  
-=================================  
-form topdir:  
-1) build for topdir(optional).  
-cd socketintro;  
-make  
-above step will compile server and cleint.  
+#Build steps:  
 
-From each modules(server and cleint).  
-==================================    
-How to build server  
-2) cd socketintro/server  
-    make  
+##Two option for build   
+
+### Form topdir:  
+$ cd socketintro;  
+$make  
+
+Above step will compile server and cleint.  
+
+##From each modules(server and cleint).  
+
+###How to build server  
+$ cd socketintro/server  
+$ make  
 
 makefile output for reference:  
 	mkdir -p bin/  
@@ -21,8 +23,8 @@ makefile output for reference:
     	
 
 How to build cleint.   
-cd socketintro/client   
-   make  
+$ cd socketintro/client   
+$ make  
 
 makefile outout:   
    mkdir -p bin/  
@@ -30,22 +32,24 @@ makefile outout:
    gcc -Wall -std=c99 -g -I../include/ -c src/client.c -o obj/client.o  
 
 
-How to run:   
-===============================     
-for server:  
-cd socketintro/server (run as root, because log file will be genrated as /var/log/server.log)  
-./bin/server  
-===============================    
-for client:  
+##How to run:   
+### server:  
+$ cd socketintro/server (run as root, because log file will be
+    genrated as /var/log/server.log)  
+$ ./bin/server  
+
+###for client:  
 cd socketintro/client.  
-./bin/client  
-================================  
-DONE:  
+$ ./bin/client  
+
+##DONE:  
 1) ls command support.  
 2) bye command support.  
 3) server will give proper message to client for unsupported cmds.  
-================================  
-TODO:  
-1) use proper locking for logging as logging is happening in multi threaded environment.  
-2) want to use prtobuf library, as this will eliminate the machine type dependency.(need more time to understand, .protoc files :( )  
+
+##TODO:  
+1) use proper locking for logging as logging is happening in multi
+   threaded environment.  
+2) want to use prtobuf library, as this will eliminate the machine
+   type dependency.(need more time to understand, .protoc files :(.  
 3) change dir functionality need to implemted.  
