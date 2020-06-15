@@ -16,7 +16,7 @@ OBJS	= $(addprefix $(OBJDIR), $(_OBJS))
 
 LIBS= -lpthread
 # compilation flags
-CFLAGS = -Wall -std=c99  -Wno-unused-variable -g -I$(INCLDIR)
+CFLAGS = -Wall  -Wno-unused-variable  -DLOG_USE_COLOR -g -I$(INCLDIR)
 OFLAGS =
 
 # compile binary and object files
@@ -27,7 +27,6 @@ $(BIN): $(BINDIR) $(OBJS)
 
 $(BINDIR):
 	mkdir -p $(BINDIR)
-$(info   VAR is $(OBJS))
 $(OBJS): $(OBJDIR) $(SRC)
 	$(CC) $(CFLAGS) -c $(SRC)
 	mv *.o $(OBJDIR) 
