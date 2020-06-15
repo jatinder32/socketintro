@@ -1,6 +1,6 @@
 # project setup
 CC	= gcc
-INCLDIR	= ../include/
+INCLDIR	= ./include/
 BINDIR	= bin/
 OBJDIR 	= obj/
 SRCDIR	= src/

@@ -6,7 +6,8 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <errno.h>
-#include "common.h"
+#include <assert.h>
+#include <signal.h> /* signal */
 #include "server_impl.h"
 #include "log.h"
 
@@ -18,7 +19,13 @@ struct thread_args { 		/* Structure of arguments to pass to client thread */
 
 void *worker(void *thread_args);
 
-int log_init(void)
+/* initialzie log
+ * 
+ * parma: void.
+ *
+ * return 0 for success else errorno
+ */
+static int log_init(void)
 {
 	int rc = 0;
 
@@ -38,37 +45,61 @@ int main()
 {
 	int ret = 0;
 	int server_sock = 0;
-	int client_sock = 0;
 	struct thread_args *thread_args; 	
 	unsigned short port;
 	pthread_t thread_id;
+	fd_set readfds; 
+
+	signal(SIGPIPE, SIG_IGN); /* ignore sigpipe signal */
 
 	/* log initialization */
 	ret = log_init();
+	if (ret != 0 ) {
+		fprintf(stderr, "log init failed\n");
+		goto out;
+	}
 
 	log_info("Server started\n");
 
+	/* port number, can be read for conf file */
 	port = 5432;
 
 	/* create socket */
 	server_sock = create_socket(port);
 
 	for(;;) { 	/* Run forever */
-		client_sock = accept_connection(server_sock); 
-		assert(client_sock > 0);
+		FD_ZERO(&readfds);
+		FD_SET(server_sock, &readfds);
+		log_info("blocked on select call");
 
-		/* Create separate memory for client argument */
-		thread_args = malloc(sizeof(struct thread_args));
-		assert(thread_args != NULL);	
-		thread_args->client_sock = client_sock;
+		select(server_sock + 1, &readfds, NULL, NULL, NULL);
 
-		/* Create client thread */
-		ret = pthread_create(&thread_id, NULL, worker, (void *)thread_args);
-		assert(ret == 0);
+		if (FD_ISSET(server_sock, &readfds)) {
+			log_debug("New connection recived");
+
+
+			int client_sock = accept_connection(server_sock); 
+			assert(client_sock > 0);
+
+			/* Create separate memory for client argument */
+			thread_args = malloc(sizeof(struct thread_args));
+			assert(thread_args != NULL);	
+			thread_args->client_sock = client_sock;
+
+			/* Create client thread */
+			ret = pthread_create(&thread_id, NULL, worker, (void *)thread_args);
+			assert(ret == 0);
+		}
 	}
+out:
 	return 0;
 }
 
+/* Thread worker
+ *
+ * param[in]: args from main. 
+ * return void.
+ */
 void *worker(void *thread_args)
 {
 	log_debug("Entry: %s\n", __func__);
@@ -80,7 +111,7 @@ void *worker(void *thread_args)
 	client_sock = ((struct thread_args *)thread_args)->client_sock;
 
 	free(thread_args); /* Deallocate memory for argument */
-
+	/* check handle_cleint is reentrant function, if not have synchronization */
 	handle_client(client_sock);
 	log_debug("Exit: %s\n", __func__);
 	return (NULL);
