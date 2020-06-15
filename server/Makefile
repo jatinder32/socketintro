@@ -6,7 +6,7 @@ OBJDIR 	= obj/
 SRCDIR	= src/
 
 # final excutable name
-_BIN 	= a.out
+_BIN 	= server
 BIN	= $(addprefix $(BINDIR), $(_BIN))
 
 #files
